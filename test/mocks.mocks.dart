@@ -4,12 +4,14 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i9;
+import 'dart:typed_data' as _i28;
 
+import 'package:bitkub_test/core/crypto/device_crypto_service.dart' as _i27;
 import 'package:bitkub_test/data/api_client/api_client.dart' as _i8;
 import 'package:bitkub_test/data/data_sources/auth_remote/auth_remote_data_source.dart'
     as _i10;
 import 'package:bitkub_test/data/data_sources/auth_remote/user_remote/user_remote_data_source.dart'
-    as _i34;
+    as _i36;
 import 'package:bitkub_test/data/dtos/auth_dto.dart' as _i2;
 import 'package:bitkub_test/data/dtos/otp_ref.dart' as _i3;
 import 'package:bitkub_test/data/dtos/requests/complete_sign_up_request_dto.dart'
@@ -35,18 +37,18 @@ import 'package:bitkub_test/domain/entities/requests/submit_otp_request.dart'
 import 'package:bitkub_test/domain/entities/sign_up_token.dart' as _i22;
 import 'package:bitkub_test/domain/entities/user.dart' as _i26;
 import 'package:bitkub_test/domain/repositories/auth_repository.dart' as _i15;
-import 'package:bitkub_test/domain/repositories/user_repository.dart' as _i35;
-import 'package:bitkub_test/domain/store/session_store.dart' as _i30;
+import 'package:bitkub_test/domain/repositories/token_repository.dart' as _i35;
+import 'package:bitkub_test/domain/repositories/user_repository.dart' as _i37;
 import 'package:bitkub_test/domain/use_cases/complete_sign_up_use_case.dart'
     as _i25;
-import 'package:bitkub_test/domain/use_cases/sign_in_use_case.dart' as _i31;
-import 'package:bitkub_test/domain/use_cases/sign_out_use_case.dart' as _i32;
-import 'package:bitkub_test/domain/use_cases/splash_use_case.dart' as _i33;
+import 'package:bitkub_test/domain/use_cases/sign_in_use_case.dart' as _i32;
+import 'package:bitkub_test/domain/use_cases/sign_out_use_case.dart' as _i33;
+import 'package:bitkub_test/domain/use_cases/splash_use_case.dart' as _i34;
 import 'package:bitkub_test/domain/utils/result.dart' as _i16;
-import 'package:bitkub_test/ui/session/session_cubit.dart' as _i28;
+import 'package:bitkub_test/ui/session/session_cubit.dart' as _i30;
 import 'package:bitkub_test/ui/session/session_state.dart' as _i6;
-import 'package:flutter/foundation.dart' as _i27;
-import 'package:flutter_bloc/flutter_bloc.dart' as _i29;
+import 'package:flutter/foundation.dart' as _i29;
+import 'package:flutter_bloc/flutter_bloc.dart' as _i31;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i5;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i19;
@@ -344,6 +346,32 @@ class MockCompleteSignUpUseCase extends _i1.Mock
           as _i9.Future<_i16.Result<_i26.User>>);
 }
 
+/// A class which mocks [DeviceCryptoService].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockDeviceCryptoService extends _i1.Mock
+    implements _i27.DeviceCryptoService {
+  MockDeviceCryptoService() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i9.Future<_i28.Uint8List> encrypt(_i28.Uint8List? plain, {String? aad}) =>
+      (super.noSuchMethod(
+            Invocation.method(#encrypt, [plain], {#aad: aad}),
+            returnValue: _i9.Future<_i28.Uint8List>.value(_i28.Uint8List(0)),
+          )
+          as _i9.Future<_i28.Uint8List>);
+
+  @override
+  _i9.Future<_i28.Uint8List> decrypt(_i28.Uint8List? combined, {String? aad}) =>
+      (super.noSuchMethod(
+            Invocation.method(#decrypt, [combined], {#aad: aad}),
+            returnValue: _i9.Future<_i28.Uint8List>.value(_i28.Uint8List(0)),
+          )
+          as _i9.Future<_i28.Uint8List>);
+}
+
 /// A class which mocks [FlutterSecureStorage].
 ///
 /// See the documentation for Mockito's code generation for more information.
@@ -419,7 +447,7 @@ class MockFlutterSecureStorage extends _i1.Mock
   @override
   void registerListener({
     required String? key,
-    required _i27.ValueChanged<String?>? listener,
+    required _i29.ValueChanged<String?>? listener,
   }) => super.noSuchMethod(
     Invocation.method(#registerListener, [], {#key: key, #listener: listener}),
     returnValueForMissingStub: null,
@@ -428,7 +456,7 @@ class MockFlutterSecureStorage extends _i1.Mock
   @override
   void unregisterListener({
     required String? key,
-    required _i27.ValueChanged<String?>? listener,
+    required _i29.ValueChanged<String?>? listener,
   }) => super.noSuchMethod(
     Invocation.method(#unregisterListener, [], {
       #key: key,
@@ -609,7 +637,7 @@ class MockFlutterSecureStorage extends _i1.Mock
 /// A class which mocks [SessionCubit].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockSessionCubit extends _i1.Mock implements _i28.SessionCubit {
+class MockSessionCubit extends _i1.Mock implements _i30.SessionCubit {
   MockSessionCubit() {
     _i1.throwOnMissingStub(this);
   }
@@ -648,7 +676,7 @@ class MockSessionCubit extends _i1.Mock implements _i28.SessionCubit {
   );
 
   @override
-  void onChange(_i29.Change<_i6.SessionState>? change) => super.noSuchMethod(
+  void onChange(_i31.Change<_i6.SessionState>? change) => super.noSuchMethod(
     Invocation.method(#onChange, [change]),
     returnValueForMissingStub: null,
   );
@@ -675,11 +703,77 @@ class MockSessionCubit extends _i1.Mock implements _i28.SessionCubit {
           as _i9.Future<void>);
 }
 
-/// A class which mocks [SessionStore].
+/// A class which mocks [SignInUseCase].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockSessionStore extends _i1.Mock implements _i30.SessionStore {
-  MockSessionStore() {
+class MockSignInUseCase extends _i1.Mock implements _i32.SignInUseCase {
+  MockSignInUseCase() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i9.Future<_i16.Result<_i26.User>> call(_i18.SignInRequest? request) =>
+      (super.noSuchMethod(
+            Invocation.method(#call, [request]),
+            returnValue: _i9.Future<_i16.Result<_i26.User>>.value(
+              _i19.dummyValue<_i16.Result<_i26.User>>(
+                this,
+                Invocation.method(#call, [request]),
+              ),
+            ),
+          )
+          as _i9.Future<_i16.Result<_i26.User>>);
+}
+
+/// A class which mocks [SignOutUseCase].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockSignOutUseCase extends _i1.Mock implements _i33.SignOutUseCase {
+  MockSignOutUseCase() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i9.Future<_i16.Result<_i16.Unit>> call() =>
+      (super.noSuchMethod(
+            Invocation.method(#call, []),
+            returnValue: _i9.Future<_i16.Result<_i16.Unit>>.value(
+              _i19.dummyValue<_i16.Result<_i16.Unit>>(
+                this,
+                Invocation.method(#call, []),
+              ),
+            ),
+          )
+          as _i9.Future<_i16.Result<_i16.Unit>>);
+}
+
+/// A class which mocks [SplashUseCase].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockSplashUseCase extends _i1.Mock implements _i34.SplashUseCase {
+  MockSplashUseCase() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i9.Future<_i16.Result<_i26.User?>> call() =>
+      (super.noSuchMethod(
+            Invocation.method(#call, []),
+            returnValue: _i9.Future<_i16.Result<_i26.User?>>.value(
+              _i19.dummyValue<_i16.Result<_i26.User?>>(
+                this,
+                Invocation.method(#call, []),
+              ),
+            ),
+          )
+          as _i9.Future<_i16.Result<_i26.User?>>);
+}
+
+/// A class which mocks [TokenRepository].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockTokenRepository extends _i1.Mock implements _i35.TokenRepository {
+  MockTokenRepository() {
     _i1.throwOnMissingStub(this);
   }
 
@@ -710,77 +804,11 @@ class MockSessionStore extends _i1.Mock implements _i30.SessionStore {
           as _i9.Future<void>);
 }
 
-/// A class which mocks [SignInUseCase].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockSignInUseCase extends _i1.Mock implements _i31.SignInUseCase {
-  MockSignInUseCase() {
-    _i1.throwOnMissingStub(this);
-  }
-
-  @override
-  _i9.Future<_i16.Result<_i26.User>> call(_i18.SignInRequest? request) =>
-      (super.noSuchMethod(
-            Invocation.method(#call, [request]),
-            returnValue: _i9.Future<_i16.Result<_i26.User>>.value(
-              _i19.dummyValue<_i16.Result<_i26.User>>(
-                this,
-                Invocation.method(#call, [request]),
-              ),
-            ),
-          )
-          as _i9.Future<_i16.Result<_i26.User>>);
-}
-
-/// A class which mocks [SignOutUseCase].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockSignOutUseCase extends _i1.Mock implements _i32.SignOutUseCase {
-  MockSignOutUseCase() {
-    _i1.throwOnMissingStub(this);
-  }
-
-  @override
-  _i9.Future<_i16.Result<_i16.Unit>> call() =>
-      (super.noSuchMethod(
-            Invocation.method(#call, []),
-            returnValue: _i9.Future<_i16.Result<_i16.Unit>>.value(
-              _i19.dummyValue<_i16.Result<_i16.Unit>>(
-                this,
-                Invocation.method(#call, []),
-              ),
-            ),
-          )
-          as _i9.Future<_i16.Result<_i16.Unit>>);
-}
-
-/// A class which mocks [SplashUseCase].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockSplashUseCase extends _i1.Mock implements _i33.SplashUseCase {
-  MockSplashUseCase() {
-    _i1.throwOnMissingStub(this);
-  }
-
-  @override
-  _i9.Future<_i16.Result<_i26.User?>> call() =>
-      (super.noSuchMethod(
-            Invocation.method(#call, []),
-            returnValue: _i9.Future<_i16.Result<_i26.User?>>.value(
-              _i19.dummyValue<_i16.Result<_i26.User?>>(
-                this,
-                Invocation.method(#call, []),
-              ),
-            ),
-          )
-          as _i9.Future<_i16.Result<_i26.User?>>);
-}
-
 /// A class which mocks [UserRemoteDataSource].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockUserRemoteDataSource extends _i1.Mock
-    implements _i34.UserRemoteDataSource {
+    implements _i36.UserRemoteDataSource {
   MockUserRemoteDataSource() {
     _i1.throwOnMissingStub(this);
   }
@@ -799,7 +827,7 @@ class MockUserRemoteDataSource extends _i1.Mock
 /// A class which mocks [UserRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockUserRepository extends _i1.Mock implements _i35.UserRepository {
+class MockUserRepository extends _i1.Mock implements _i37.UserRepository {
   MockUserRepository() {
     _i1.throwOnMissingStub(this);
   }

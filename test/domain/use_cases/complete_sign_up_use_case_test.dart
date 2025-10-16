@@ -15,16 +15,20 @@ void main() {
     provideDummy<Result<User>>(Result.failure(const AppError('dummy-user')));
   });
 
-  late MockSessionStore store;
+  late MockTokenRepository tokenRepo;
   late MockAuthRepository authRepo;
   late MockUserRepository userRepo;
   late CompleteSignUpUseCase useCase;
 
   setUp(() {
-    store = MockSessionStore();
+    tokenRepo = MockTokenRepository();
     authRepo = MockAuthRepository();
     userRepo = MockUserRepository();
-    useCase = CompleteSignUpUseCase(store, authRepo, userRepo);
+    useCase = CompleteSignUpUseCase(
+      tokenRepo,
+      authRepo,
+      userRepo,
+    );
   });
 
   group('CompleteSignUpUseCase', () {
@@ -49,14 +53,14 @@ void main() {
         when(
           authRepo.completeSignUp(request: req),
         ).thenAnswer((_) async => Result.success(auth));
-        when(store.saveAuth(auth)).thenAnswer((_) async {});
+        when(tokenRepo.saveAuth(auth)).thenAnswer((_) async {});
         when(userRepo.me()).thenAnswer((_) async => Result.success(user));
 
         final result = await useCase.call(req);
 
         verifyInOrder([
           authRepo.completeSignUp(request: req),
-          store.saveAuth(auth),
+          tokenRepo.saveAuth(auth),
           userRepo.me(),
         ]);
         verifyNoMoreInteractions(authRepo);
@@ -85,7 +89,7 @@ void main() {
         final result = await useCase.call(req);
 
         verify(authRepo.completeSignUp(request: req)).called(1);
-        verifyNever(store.saveAuth(any));
+        verifyNever(tokenRepo.saveAuth(any));
         verifyNever(userRepo.me());
 
         result.when(
@@ -109,14 +113,14 @@ void main() {
         when(
           authRepo.completeSignUp(request: req),
         ).thenAnswer((_) async => Result.success(auth));
-        when(store.saveAuth(auth)).thenAnswer((_) async {});
+        when(tokenRepo.saveAuth(auth)).thenAnswer((_) async {});
         when(userRepo.me()).thenAnswer((_) async => Result.failure(err));
 
         final result = await useCase.call(req);
 
         verifyInOrder([
           authRepo.completeSignUp(request: req),
-          store.saveAuth(auth),
+          tokenRepo.saveAuth(auth),
           userRepo.me(),
         ]);
 

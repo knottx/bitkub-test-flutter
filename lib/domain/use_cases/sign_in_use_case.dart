@@ -2,17 +2,17 @@ import 'package:bitkub_test/domain/entities/auth.dart';
 import 'package:bitkub_test/domain/entities/requests/sign_in_request.dart';
 import 'package:bitkub_test/domain/entities/user.dart';
 import 'package:bitkub_test/domain/repositories/auth_repository.dart';
+import 'package:bitkub_test/domain/repositories/token_repository.dart';
 import 'package:bitkub_test/domain/repositories/user_repository.dart';
-import 'package:bitkub_test/domain/store/session_store.dart';
 import 'package:bitkub_test/domain/utils/result.dart';
 
 class SignInUseCase {
-  final SessionStore _sessionStore;
+  final TokenRepository _tokenRepository;
   final AuthRepository _authRepository;
   final UserRepository _userRepository;
 
   const SignInUseCase(
-    this._sessionStore,
+    this._tokenRepository,
     this._authRepository,
     this._userRepository,
   );
@@ -24,7 +24,7 @@ class SignInUseCase {
 
     switch (result) {
       case Success<Auth>():
-        await _sessionStore.saveAuth(result.value);
+        await _tokenRepository.saveAuth(result.value);
         return _getProfile();
       case Failure<Auth>():
         return Result.failure(result.error);

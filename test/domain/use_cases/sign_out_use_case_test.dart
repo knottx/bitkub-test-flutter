@@ -11,26 +11,29 @@ void main() {
     provideDummy<Result<Unit>>(Result.failure(const AppError('dummy')));
   });
 
-  late MockSessionStore store;
+  late MockTokenRepository tokenRepo;
   late MockAuthRepository repo;
   late SignOutUseCase useCase;
 
   setUp(() {
-    store = MockSessionStore();
+    tokenRepo = MockTokenRepository();
     repo = MockAuthRepository();
-    useCase = SignOutUseCase(store, repo);
+    useCase = SignOutUseCase(
+      tokenRepo,
+      repo,
+    );
   });
 
   test(
     'success: calls repo.signOut, clears store, returns success(Unit)',
     () async {
       when(repo.signOut()).thenAnswer((_) async => Result.success(Unit()));
-      when(store.clear()).thenAnswer((_) async {});
+      when(tokenRepo.clear()).thenAnswer((_) async {});
 
       final result = await useCase.call();
 
       verify(repo.signOut()).called(1);
-      verify(store.clear()).called(1);
+      verify(tokenRepo.clear()).called(1);
 
       result.when(
         onSuccess: (_) => expect(true, isTrue),
@@ -49,7 +52,7 @@ void main() {
       final result = await useCase.call();
 
       verify(repo.signOut()).called(1);
-      verifyNever(store.clear());
+      verifyNever(tokenRepo.clear());
 
       result.when(
         onSuccess: (_) => fail('Expected failure'),

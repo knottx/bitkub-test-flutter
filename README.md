@@ -1,5 +1,7 @@
 # Bitkub Test Flutter App
 
+https://github.com/user-attachments/assets/a577a515-281c-40ca-b355-869c2df31b1a
+
 ## Overview
 
 This Flutter application implements a simple auth flow with Sign In, multi-step Sign Up, a Home screen that displays user info, and session persistence until logout.
@@ -41,6 +43,7 @@ This Flutter application implements a simple auth flow with Sign In, multi-step 
 
    - You have a device or emulator selected at the bottom-right corner of VS Code.
    - The main entry file is `lib/main.dart`.
+   - using args `--dart-define-from-file .env.dev`
 
 VS Code will automatically build and launch the app in **debug mode**
 
@@ -101,10 +104,14 @@ VS Code will automatically build and launch the app in **debug mode**
   - `/auth/complete-signup` exchanges `signUpToken` + phone + password for an `accessToken` (auth).
   - Purpose: Prevents completing sign up without a valid OTP step; acts as a short-lived handoff between OTP verification and password creation.
 
-- **Session storage (`SessionStore`)**
+- **TokenRepositoryImpl**
 
-  - Implemented by `SessionStoreImpl` using `flutter_secure_storage` to persist the `Auth` object (`accessToken`).
-  - Used at startup (splash) to restore session and in API calls for authenticated requests.
+  - Repository responsible for securely persisting and retrieving authentication tokens.
+  - Encrypts token payloads using a device-bound crypto key before storing them in `FlutterSecureStorage`.
+  - Uses `DeviceCryptoService` (AES-GCM) to provide confidentiality, integrity, and tamper detection.
+  - Decodes and decrypts data on read; returns `null` if payload is corrupted or cannot be decrypted.
+  - Includes in-memory caching to avoid unnecessary secure storage reads and improve performance.
+  - Designed for testability with mocked secure storage and crypto layer in unit tests.
 
 - **API client (`ApiClientDemo`)**
   - A mock client backing endpoints like `/auth/signin`, `/auth/signup`, `/auth/submit-otp`, `/auth/complete-signup`, and `/users/me`.

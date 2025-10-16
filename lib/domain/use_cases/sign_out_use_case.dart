@@ -1,13 +1,13 @@
 import 'package:bitkub_test/domain/repositories/auth_repository.dart';
-import 'package:bitkub_test/domain/store/session_store.dart';
+import 'package:bitkub_test/domain/repositories/token_repository.dart';
 import 'package:bitkub_test/domain/utils/result.dart';
 
 class SignOutUseCase {
-  final SessionStore _sessionStore;
+  final TokenRepository _tokenRepository;
   final AuthRepository _authRepository;
 
   const SignOutUseCase(
-    this._sessionStore,
+    this._tokenRepository,
     this._authRepository,
   );
 
@@ -15,7 +15,7 @@ class SignOutUseCase {
     final result = await _authRepository.signOut();
     switch (result) {
       case Success<Unit>():
-        _sessionStore.clear();
+        await _tokenRepository.clear();
         return Result.success(Unit());
       case Failure<Unit>():
         return Result.failure(result.error);

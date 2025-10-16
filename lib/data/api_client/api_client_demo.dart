@@ -1,15 +1,17 @@
 import 'dart:math';
 
 import 'package:bitkub_test/data/api_client/api_client.dart';
-import 'package:bitkub_test/domain/store/session_store.dart';
+import 'package:bitkub_test/domain/repositories/token_repository.dart';
 import 'package:bitkub_test/domain/utils/app_error.dart';
 
 class ApiClientDemo implements ApiClient {
-  final SessionStore _sessionStore;
+  final TokenRepository _tokenRepository;
 
   Map<String, Map<String, dynamic>> users = {};
 
-  ApiClientDemo(this._sessionStore);
+  ApiClientDemo(
+    this._tokenRepository,
+  );
 
   @override
   Future<Map<String, dynamic>> get(
@@ -18,7 +20,7 @@ class ApiClientDemo implements ApiClient {
   }) async {
     await Future.delayed(const Duration(milliseconds: 300));
 
-    final auth = await _sessionStore.readAuth();
+    final auth = await _tokenRepository.readAuth();
     final accessToken = auth?.accessToken;
 
     switch (path) {
@@ -57,7 +59,7 @@ class ApiClientDemo implements ApiClient {
         throw const AppError('Invalid phone number or password');
 
       case '/auth/signout':
-        final auth = await _sessionStore.readAuth();
+        final auth = await _tokenRepository.readAuth();
         final accessToken = auth?.accessToken;
         if (accessToken != null && accessToken.isNotEmpty) {
           users.remove(accessToken);
